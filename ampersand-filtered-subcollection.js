@@ -9,7 +9,7 @@ var isArray = require('lodash/isArray');
 var isEqual = require('lodash/isEqual');
 var keys = require('lodash/keys');
 var reduce = require('lodash/reduce');
-var sortBy = require('lodash/sortBy');
+var orderBy = require('lodash/orderBy');
 var sortedIndexBy = require('lodash/sortedIndexBy');
 var union = require('lodash/union');
 var classExtend = require('ampersand-class-extend');
@@ -111,6 +111,7 @@ assign(FilteredCollection.prototype, Events, {
     _parseSpec: function (spec) {
         if (spec.watched) this._watch(spec.watched);
         //this.comparator = this.collection.comparator;
+        this.direction = spec.direction ? 'asc' : 'desc';
         if (spec.comparator) this.comparator = spec.comparator;
         if (spec.where) {
             forEach(spec.where, bind(function (value, item) {
@@ -162,7 +163,7 @@ assign(FilteredCollection.prototype, Events, {
         comparator = comparator || this.comparator || this.collection.comparator;
         if (comparator) {
             if (typeof comparator === 'string' || comparator.length === 1) {
-                newModels = sortBy(newModels, comparator);
+                newModels = orderBy(newModels, comparator, this.direction);
             } else {
                 // lodash sortBy does not allow for traditional a, b comparisons
                 newModels = newModels.sort(comparator);
